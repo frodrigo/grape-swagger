@@ -1,5 +1,15 @@
 module GrapeSwagger
   module DocMethods
+    @@primitive_mapping = {
+      'integer' => %w(integer int32),
+      'long' => %w(integer int64),
+      'float' => %w(number float),
+      'double' => %w(number double),
+      'byte' => %w(string byte),
+      'date' => %w(string date),
+      'dateTime' => %w(string date-time)
+    }
+
     def name
       @@class_name
     end
@@ -89,8 +99,10 @@ module GrapeSwagger
           allowMultiple: is_array
         }
 
-        parsed_params[:format] = 'int32' if data_type == 'integer'
-        parsed_params[:format] = 'int64' if data_type == 'long'
+        if @@primitive_mapping.key?(data_type)
+          parsed_params[:type], parsed_params[:format] = @@primitive_mapping[data_type]
+        end
+
         parsed_params[:items]  = items   if items.present?
 
         parsed_params[:defaultValue] = example if example
@@ -209,6 +221,10 @@ module GrapeSwagger
           if select_values
             select_values = select_values.call if select_values.is_a?(Proc)
             p[:enum] = select_values
+          end
+
+          if @@primitive_mapping.key?(p['type'])
+            p['type'], p['format'] = @@primitive_mapping[p['type']]
           end
 
           properties[property_name] = p
