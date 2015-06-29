@@ -1,6 +1,6 @@
 module GrapeSwagger
   module DocMethods
-    @@primitive_mapping = {
+    PRIMITIVE_MAPPING = {
       'integer' => %w(integer int32),
       'long' => %w(integer int64),
       'float' => %w(number float),
@@ -99,8 +99,8 @@ module GrapeSwagger
           allowMultiple: is_array
         }
 
-        if @@primitive_mapping.key?(data_type)
-          parsed_params[:type], parsed_params[:format] = @@primitive_mapping[data_type]
+        if @@PRIMITIVE_MAPPING.key?(data_type)
+          parsed_params[:type], parsed_params[:format] = @@PRIMITIVE_MAPPING[data_type]
         end
 
         parsed_params[:items]  = items   if items.present?
@@ -223,8 +223,8 @@ module GrapeSwagger
             p[:enum] = select_values
           end
 
-          if @@primitive_mapping.key?(p['type'])
-            p['type'], p['format'] = @@primitive_mapping[p['type']]
+          if @@PRIMITIVE_MAPPING.key?(p['type'])
+            p['type'], p['format'] = @@PRIMITIVE_MAPPING[p['type']]
           end
 
           properties[property_name] = p
